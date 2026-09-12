@@ -1,0 +1,19 @@
+# 编译生成的二进制文件
+btest
+dlc
+fshow
+ishow
+driver.pl
+
+# 编译中间文件
+*.o
+*.exe
+*.out
+
+# 系统临时文件
+*~
+.*.swp
+
+# 以后其他实验可能产生的大文件
+*.tar
+*.zip
