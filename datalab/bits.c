@@ -143,7 +143,7 @@ NOTES:
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return ~(~(~x&y)&(~(x&~y)));//构造或
+  	return ~(~(~x&y)&(~(x&~y)));//构造或
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -153,7 +153,7 @@ int bitXor(int x, int y) {
  */
 int tmin(void) {
 
-  return 1<<31;
+  	return 1<<31;
 
 }
 //2
@@ -165,7 +165,7 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return !(x+1+x+1)&!!(x+1);//确保x!=-1
+  	return !(x+1+x+1)&!!(x+1);//确保x!=-1
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -188,7 +188,7 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return ~x+1;
+  	return ~x+1;
 }
 //3
 /* 
@@ -261,8 +261,28 @@ int logicalNeg(int x) {//用符号位判断 非0数x|(-x)的首位为1
  *  Max ops: 90
  *  Rating: 4
  */
-int howManyBits(int x) {
-  return 0;
+int howManyBits(int x) {//对于一对相反数，表示所需的位数相同
+  	int sign,count,is16,is8,is4,is2,is1;
+	sign=x>>31;//变为全0/全1掩码
+	x=x^sign;//负数取反 正数不变
+	count=0;
+	//二分法逐步判断 判断二分位的前面有没有1
+	is16=!!(x>>16);
+	count+=is16<<4;
+	x=x>>(is16<<4);
+	//不需要分大小讨论，x已经移位
+	is8=!!(x>>8);
+	count+=is8<<3;
+	x=x>>(is8<<3);
+	is4=!!(x>>4);
+	count+=is4<<2;
+	x=x>>(is4<<2);
+	is2=!!(x>>2);
+	count+=is2<<1;
+	x=x>>(is2<<1);
+	is1=!!(x>>1);
+	count+=is1;
+	return count+2+~(!x)+1;
 }
 //float
 /* 
@@ -277,7 +297,25 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+	//先把符号位，exp，frac分出来
+	unsigned int sign,exp,frac;
+	sign=uf>>31;
+	exp=(uf>>23)&0xFF;
+	frac=uf&0x7FFFFF;
+	if(exp==255)return uf;
+	else if(exp==0)
+	{
+		return (uf<<1)^(sign<<31);
+	}
+	else
+	{
+		exp+=1;
+		if(exp==255)
+		{
+			frac=0;
+		}
+		return (sign<<31)|(exp<<23)|frac;
+	}
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -292,7 +330,27 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  	unsigned int sign,exp,frac,mantissa;
+	int E,e;
+	sign=uf>>31;
+	exp=(uf>>23)&0xFF;
+	frac=uf&0x7FFFFF;
+	E=exp-127;
+	if(E<0)return 0;
+	else if(E>=31)return 0x80000000u;
+	else
+	{
+		e=E-23;
+		mantissa=(1<<23)|frac;
+		if(e>=0)mantissa=mantissa<<e;
+		else mantissa=mantissa>>(-e);
+		if(sign==0)return mantissa;
+		else
+		{
+			mantissa=-mantissa;
+			return mantissa;
+		}
+	}
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
@@ -308,5 +366,20 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+	unsigned int exp,frac,res;
+	if(x>=128)res=0x7F800000;
+	else if(x<-149)res=0;
+	else if(-126<=x<=127)
+	{
+		res=0;
+		exp=x+127;
+		res=res|(exp<<23);
+	}
+	else
+	{
+		res=0;
+		frac=1;
+		res=res|(frac<<(x+149));
+	}
+   	return res;
 }
