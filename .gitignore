@@ -19,5 +19,5 @@ driver.pl
 *.zip
 
 # Bomb Lab 生成物与答案
-bomblab/bomb/bomb.s
+bomblab/bomb/bomb
 bomblab/bomb/answer.txt
