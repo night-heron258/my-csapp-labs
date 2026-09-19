@@ -17,3 +17,9 @@ driver.pl
 # 以后其他实验可能产生的大文件
 *.tar
 *.zip
+
+# Bomb Lab 生成物与答案
+bomblab/bomb
+bomblab/bomb.tar
+bomblab/bomb.s
+bomblab/answer.txt
