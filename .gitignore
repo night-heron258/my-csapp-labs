@@ -20,3 +20,10 @@ driver.pl
 
 # Bomb Lab 生成物与答案
 bomblab/bomb/bomb
+
+# Attack Lab 生成物与工具
+attacklab/target1/ctarget
+attacklab/target1/rtarget
+attacklab/target1/hex2raw
+attacklab/target1/phase*.bin
+attacklab/target1/*.o
